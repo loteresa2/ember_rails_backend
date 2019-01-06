@@ -1,16 +1,13 @@
 class UsersController < ApplicationController
-
+  before_action :authenticate, only: [:show_current]
+  
   # In header pass the Authorization key with token value "Bearer Token"
   # Token can be obtained by hitting session API of that user
   #
   def show_current
-    authenticate_or_request_with_http_token do |token, options|
-      verify_token = JWT.decode token, JWT_SECRET, true, {algorithm: "HS512"}
-      user_id = verify_token[0]["sub"]
-      puts user_id
-      @current_user = User.find(user_id)
-    end
+    resource_serializer = JSONAPI::ResourceSerializer.new(UserResource)
+    json = resource_serializer.serialize_to_hash(UserResource.new(@current_user, nil))
 
-    render json: @current_user
+    render json: json
   end
 end
