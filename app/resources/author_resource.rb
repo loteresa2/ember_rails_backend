@@ -14,7 +14,7 @@ class AuthorResource < JSONAPI::Resource
 
   attributes :first, :last
   has_many :books
-  
+
   filters :query
 
   def self.apply_filter(records, filter, value, options)
